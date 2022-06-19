@@ -14,7 +14,7 @@ public class Screenshot : MonoBehaviour
     // 파일 불러올 때 필요
     string albumName = "Test";           // 생성될 앨범의 이름
     [SerializeField]
-    GameObject panel;                    // 찍은 사진이 뜰 패널
+    GameObject fotoPanel;                    // 찍은 사진이 뜰 패널
 
     // 캡쳐 버튼을 누르면 호출
     public void Capture_Button()
@@ -74,15 +74,15 @@ public class Screenshot : MonoBehaviour
         ss.Apply();
 
         // 갤러리갱신
-        Debug.Log("" + NativeGallery.SaveImageToGallery(ss, albumName,
-            "Screenshot_" + System.DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss") + "{0}.png"));
+        // Debug.Log("" + NativeGallery.SaveImageToGallery(ss, albumName, "Screenshot_" + System.DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss") + "{0}.png"));
+        Debug.Log("" + NativeGallery.SaveImageToGallery(ss, albumName, "Screenshot_" + "{0}.png"));
 
         // To avoid memory leaks.
         // 복사 완료됐기 때문에 원본 메모리 삭제
         Destroy(ss);
-
     }
-    // 찍은 사진을 Panel에 보여준다.
+
+    // 찍은 사진을 fotoPanel에 보여준다.
     void GetPirctureAndShowIt()
     {
         string pathToFile = GetPicture.GetLastPicturePath();
@@ -92,9 +92,9 @@ public class Screenshot : MonoBehaviour
         }
         Texture2D texture = GetScreenshotImage(pathToFile);
         Sprite sp = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-        panel.SetActive(true);
+        fotoPanel.SetActive(true);
         shareButtons.SetActive(true);
-        panel.GetComponent<Image>().sprite = sp;
+        fotoPanel.GetComponent<Image>().sprite = sp;
     }
     // 찍은 사진을 불러온다.
     Texture2D GetScreenshotImage(string filePath)

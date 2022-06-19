@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Android;
@@ -51,8 +49,8 @@ public class CameraManager : MonoBehaviour
             camTexture.Play();
 
         }
-
     }
+
     // 카메라 끄기
     public void CameraOff() 
     {
