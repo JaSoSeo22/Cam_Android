@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
@@ -13,8 +12,10 @@ public class Screenshot : MonoBehaviour
 
     // 파일 불러올 때 필요
     string albumName = "Test";           // 생성될 앨범의 이름
+
     [SerializeField]
     GameObject fotoPanel;                    // 찍은 사진이 뜰 패널
+    
 
     // 캡쳐 버튼을 누르면 호출
     public void Capture_Button()
@@ -96,6 +97,7 @@ public class Screenshot : MonoBehaviour
         shareButtons.SetActive(true);
         fotoPanel.GetComponent<Image>().sprite = sp;
     }
+    
     // 찍은 사진을 불러온다.
     Texture2D GetScreenshotImage(string filePath)
     {
