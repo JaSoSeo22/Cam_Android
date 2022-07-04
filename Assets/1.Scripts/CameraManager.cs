@@ -5,7 +5,7 @@ using UnityEngine.Android;
 
 public class CameraManager : MonoBehaviour
 {
-    WebCamTexture camTexture; // 모바일 카메라의 영상을 받아오는 api
+    private WebCamTexture camTexture; // 모바일 카메라의 영상을 받아오는 api
 
     public RawImage cameraView; // 카메라가 보일 화면
 
