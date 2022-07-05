@@ -17,18 +17,20 @@ public class GetPicture : MonoBehaviour {
     }
 #endif
     
-// 다른 스크립트에서 GetPicture.GetLastPicturePath()로 호출
+    // 다른 스크립트에서 GetPicture.GetLastPicturePath()로 호출
+    // 마지막으로 저장된 사진의 경로 가져오기
     public static string GetLastPicturePath()
     {
-        // 디바이스마다 다른 저장경로
+        // 디바이스마다 다른 저장경로, 안드로이드일 경우
         string saveDir;
         #if !UNITY_EDITOR && UNITY_ANDROID
-        saveDir = AJC.CallStatic<string>( "GetMediaPath", "Shine Bright" );
+        saveDir = AJC.CallStatic<string>("/storage/emulated/0/DCIM/{Application.productName}/");
+        // saveDir = AJC.CallStatic<string>($"/storage/emulated/0/DCIM/{Application.productName}/");
         #else
         saveDir = Application.persistentDataPath;
         #endif
         // 저장경로에서 PNG파일 모두 검색
-        string[] files = Directory.GetFiles(saveDir, "*.png");
+        string[] files = Directory.GetFiles(saveDir, "*.");
         // 만약 PNG파일이 있다면, 마지막 파일을 반환
         if (files.Length > 0)
         {

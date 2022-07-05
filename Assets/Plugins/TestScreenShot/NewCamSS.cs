@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,17 +9,8 @@ using System.IO;
 using UnityEngine.Android;
 #endif
 
-// 날짜 : 2021-09-07 PM 3:03:10
-// 작성자 : Rito
-
-namespace Rito.Tests
+public class NewCamSS : MonoBehaviour
 {
-    public class Test_ScreenShot : MonoBehaviour
-    {
-        /***********************************************************************
-        *                               Public Fields
-        ***********************************************************************/
-        #region .
         public Button screenShotButton;          // 전체 화면 캡쳐
         //public Button screenShotWithoutUIButton; // UI 제외 화면 캡쳐
         public Button readAndShowButton; // 저장된 경로에서 스크린샷 파일 읽어와서 이미지에 띄우기
@@ -28,16 +19,10 @@ namespace Rito.Tests
         public ScreenShotFlash flash;
 
         public string folderName = "ScreenShots";
-        public string fileName = "MyScreenShot";
+        public string fileName = "Shot";
         public string extName = "png";
 
-        //private bool _willTakeScreenShot = false;
-        #endregion
-        /***********************************************************************
-        *                               Fields & Properties
-        ***********************************************************************/
-        #region .
-        private Texture2D _imageTexture; // imageToShow의 소스 텍스쳐
+         private Texture2D _imageTexture; // imageToShow의 소스 텍스쳐
 
         private string RootPath
         {
@@ -56,24 +41,7 @@ namespace Rito.Tests
 
         private string lastSavedPath;
 
-        #endregion
-
-        /***********************************************************************
-        *                               Unity Events
-        ***********************************************************************/
-        #region .
-        private void Awake()
-        {
-            screenShotButton.onClick.AddListener(TakeScreenShotFull);
-            //screenShotWithoutUIButton.onClick.AddListener(TakeScreenShotWithoutUI);
-            readAndShowButton.onClick.AddListener(ReadScreenShotAndShow);
-        }
-        #endregion
-        /***********************************************************************
-        *                               Button Event Handlers
-        ***********************************************************************/
-        #region .
-        /// <summary> UI 포함 전체 화면 캡쳐 </summary>
+/// <summary> UI 포함 전체 화면 캡쳐 </summary>
         private void TakeScreenShotFull()
         {
 #if UNITY_ANDROID
@@ -83,17 +51,7 @@ namespace Rito.Tests
 #endif
         }
 
-//         /// <summary> UI 미포함, 현재 카메라가 렌더링하는 화면만 캡쳐 </summary>
-//         private void TakeScreenShotWithoutUI()
-//         {
-// #if UNITY_ANDROID
-//             CheckAndroidPermissionAndDo(Permission.ExternalStorageWrite, () => _willTakeScreenShot = true);
-// #else
-//             _willTakeScreenShot = true;
-// #endif
-//         }
-
-        private void ReadScreenShotAndShow()
+         private void ReadScreenShotAndShow()
         {
 #if UNITY_ANDROID
             CheckAndroidPermissionAndDo(Permission.ExternalStorageRead, () => ReadScreenShotFileAndShow(imageToShow));
@@ -101,28 +59,12 @@ namespace Rito.Tests
             ReadScreenShotFileAndShow(imageToShow);
 #endif
         }
-        #endregion
-        /***********************************************************************
-        *                               Methods
-        ***********************************************************************/
-        #region .
 
-        // UI 포함하여 현재 화면에 보이는 모든 것 캡쳐
         private IEnumerator TakeScreenShotRoutine()
         {
             yield return new WaitForEndOfFrame();
             CaptureScreenAndSave();
         }
-
-        // // UI 제외하고 현재 카메라가 렌더링하는 모습 캡쳐
-        // private void OnPostRender()
-        // {
-        //     if (_willTakeScreenShot)
-        //     {
-        //         _willTakeScreenShot = false;
-        //         CaptureScreenAndSave();
-        //     }
-        // }
 
 #if UNITY_ANDROID
         /// <summary> 안드로이드 - 권한 확인하고, 승인시 동작 수행하기 </summary>
@@ -151,13 +93,10 @@ namespace Rito.Tests
         }
 #endif
 
-        /// <summary> 스크린샷을 찍고 경로에 저장하기 </summary>
+/// <summary> 스크린샷을 찍고 경로에 저장하기 </summary>
         private void CaptureScreenAndSave()
         {
             string totalPath = TotalPath; // 프로퍼티 참조 시 시간에 따라 이름이 결정되므로 캐싱
-
-            // Texture2D screenTex = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
-            // Rect area = new Rect(0f, 0f, Screen.width, Screen.height);
 
             Texture2D screenTex = new Texture2D(1000, 1000, TextureFormat.RGB24, false);
             Rect area = new Rect(300f, 40f, 1000, 1000);
@@ -211,8 +150,7 @@ namespace Rito.Tests
 #endif
         }
 
-        // 가장 최근에 저장된 이미지 보여주기
-        /// <summary> 경로로부터 저장된 스크린샷 파일을 읽어서 이미지에 보여주기 </summary>
+        /// <summary> 경로로부터 가장 최근에 저장된 스크린샷 파일을 읽어서 이미지에 보여주기 </summary>
         private void ReadScreenShotFileAndShow(Image destination)
         {
             string folderPath = FolderPath;
@@ -258,6 +196,5 @@ namespace Rito.Tests
             Sprite sprite = Sprite.Create(_imageTexture, rect, Vector2.one * 0.5f);
             destination.sprite = sprite;
         }
-        #endregion
-    }
+
 }

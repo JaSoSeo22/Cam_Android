@@ -2,11 +2,11 @@ using System.Collections;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
+using TMPro;
 
 public class Screenshot : MonoBehaviour
 {
-   // public GameObject blink;             // 사진 찍을 때 깜빡일 것
-    public GameObject shareButtons;      // 공유 버튼
+   public GameObject blink;             // 사진 찍을 때 깜빡일 것
 
     bool isCoroutinePlaying;             // 코루틴 중복방지
 
@@ -14,7 +14,11 @@ public class Screenshot : MonoBehaviour
     string albumName = "Test";           // 생성될 앨범의 이름
 
     [SerializeField]
-    GameObject fotoPanel;                    // 찍은 사진이 뜰 패널
+    GameObject showSavedImg;                    // 찍은 사진이 뜰 패널
+
+    public TextMeshProUGUI debugUI;
+
+    private int num = 1;
     
 
     // 캡쳐 버튼을 누르면 호출
@@ -34,30 +38,38 @@ public class Screenshot : MonoBehaviour
         // 스크린샷 + 갤러리갱신
         ScreenshotAndGallery();
 
+        debugUI.text = "Phase 1";
         yield return new WaitForEndOfFrame();
 
         // 블링크
-       // BlinkUI();
+        BlinkUI();
 
         // 셔터 사운드 넣기...
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
-        yield return new WaitForEndOfFrame();
+        debugUI.text = "Phase 2";
+        yield return new WaitForSeconds(1f);
+        // yield return new WaitForEndOfFrame();
 
         // 찍은 사진이 등장
         GetPirctureAndShowIt();
+        debugUI.text = "Phase 3";
+        yield return new WaitForSeconds(1f);
 
         isCoroutinePlaying = false;
+        debugUI.text = "capture" + num;
+        
+        num++;
     }
 
-    // // 흰색 블링크 생성
-    // void BlinkUI()
-    // {
-    //     GameObject b = Instantiate(blink);
-    //     b.transform.SetParent(transform);
-    //     b.transform.localPosition = new Vector3(0, 0, 0);
-    //     b.transform.localScale = new Vector3(1, 1, 1);
-    // }
+    //흰색 블링크 생성
+    void BlinkUI()
+    {
+        GameObject b = Instantiate(blink);
+        b.transform.SetParent(transform);
+        b.transform.localPosition = new Vector3(0, 0, 0);
+        b.transform.localScale = new Vector3(1, 1, 1);
+    }
 
     // 스크린샷 찍고 갤러리에 갱신
     void ScreenshotAndGallery()
@@ -66,19 +78,22 @@ public class Screenshot : MonoBehaviour
         Texture2D screenShot = new Texture2D(1000, 1000, TextureFormat.RGB24, false); //카메라가 인식할 영역의 크기
         
         // 현재 이미지로부터 지정 영역의 픽셀들을 텍스쳐에 저장
-        screenShot.ReadPixels(new Rect(300, 40, 1000, 1000), 0, 0); // (cameraview UI Pivot 좌하단 기준) 좌표 x,y 입력, 가로 길이, 세로 길이
+        Rect area = new Rect(300, 40, 1000, 1000); // (cameraview UI Pivot 좌하단 기준) Rect(좌표 x,y 입력, 가로 길이, 세로 길이)
+        screenShot.ReadPixels(area, 0, 0); 
         screenShot.Apply();
 
         // 갤러리갱신
         // Debug.Log("" + NativeGallery.SaveImageToGallery(ss, albumName, "Screenshot_" + System.DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss") + "{0}.png"));
-        Debug.Log("" + NativeGallery.SaveImageToGallery(screenShot, albumName, "Screenshot_" + "{0}.png"));
+        Debug.Log("" + NativeGallery.SaveImageToGallery( screenShot, "GalleryTest", "Image.png", 
+                ( success, path ) => Debug.Log( "Media save result: " + success + " " + path )));
 
+      //  if(NativeGallery.SaveImageToGallery(screenShot,"GalleryTest", "Image.png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ))
         // To avoid memory leaks.
         // 복사 완료됐기 때문에 원본 메모리 삭제
         Destroy(screenShot);
     }
 
-    // 찍은 사진을 show img에 보여준다.
+    // 찍은 사진을 showsavedimg에 보여준다.
     void GetPirctureAndShowIt()
     {
         string pathToFile = GetPicture.GetLastPicturePath();
@@ -88,9 +103,8 @@ public class Screenshot : MonoBehaviour
         }
         Texture2D texture = GetScreenshotImage(pathToFile);
         Sprite sp = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-        fotoPanel.SetActive(true);
-        shareButtons.SetActive(true);
-        fotoPanel.GetComponent<Image>().sprite = sp;
+        showSavedImg.SetActive(true);
+        showSavedImg.GetComponent<Image>().sprite = sp;
     }
     
     // 찍은 사진을 불러온다.
