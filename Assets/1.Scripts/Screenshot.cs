@@ -20,12 +20,18 @@ public class Screenshot : MonoBehaviour
     public TextMeshProUGUI debugUI;
 
     private int num = 1;
+
+    // 지정한 경로( _savepath)에 PNG 파일형식으로 저장합니다.
+    private string _SavePath = "/1.Scripts/img"; //경로 바꾸세요!
+    int _CaptureCounter = 0; // 파일명을 위한
+
+    static WebCamTexture cam;
     
 
     // 캡쳐 버튼을 누르면 호출
     public void Capture_Button()
     {
-        // 중복방지 bool
+        // 중복방지 bool, true 일 때 실행
         if (!isCoroutinePlaying)
         {
             StartCoroutine("captureScreenshot");
@@ -58,9 +64,11 @@ public class Screenshot : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         isCoroutinePlaying = false;
+        yield return new WaitForEndOfFrame();
         debugUI.text = "capture" + num;
         
         num++;
+        Debug.Log(isCoroutinePlaying);
     }
 
     //흰색 블링크 생성
@@ -75,8 +83,31 @@ public class Screenshot : MonoBehaviour
     // 스크린샷 찍고 갤러리에 갱신
     void ScreenshotAndGallery()
     {
+
+
+#if UNITY_EDITOR
+        // // 스크린샷할 이미지 담을 공간 생성
+        // Texture2D screenShot = new Texture2D(1000, 1000, TextureFormat.RGB24, false); //카메라가 인식할 영역의 크기
+      
+        
+        // // 현재 이미지로부터 지정 영역의 픽셀들을 텍스쳐에 저장
+        // Rect area = new Rect(300, 40, 1000, 1000); // (cameraview UI Pivot 좌하단 기준) Rect(좌표 x,y 입력, 가로 길이, 세로 길이)
+        // screenShot.ReadPixels(area, 0, 0); 
+        // screenShot.Apply();
+
+        Texture2D snap = new Texture2D(cam.width, cam.height);
+        snap.SetPixels(cam.GetPixels());
+        snap.Apply();
+
+        Debug.Log("Screenshot!!!");
+        //System.IO.File.WriteAllBytes(Application.dataPath+_SavePath + _CaptureCounter.ToString() + ".png", screenShot.EncodeToPNG());
+        System.IO.File.WriteAllBytes("E:/Unity/GItHub/Cam_Android/Assets/1.Scripts/img/" + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
+        Debug.Log(++_CaptureCounter);
+
+#elif !UNITY_EDITOR && UNITY_ANDROID
         // 스크린샷할 이미지 담을 공간 생성
         Texture2D screenShot = new Texture2D(1000, 1000, TextureFormat.RGB24, false); //카메라가 인식할 영역의 크기
+      
         
         // 현재 이미지로부터 지정 영역의 픽셀들을 텍스쳐에 저장
         Rect area = new Rect(300, 40, 1000, 1000); // (cameraview UI Pivot 좌하단 기준) Rect(좌표 x,y 입력, 가로 길이, 세로 길이)
@@ -92,12 +123,14 @@ public class Screenshot : MonoBehaviour
         // To avoid memory leaks.
         // 복사 완료됐기 때문에 원본 메모리 삭제
         Destroy(screenShot);
+#endif
     }
 
     // 찍은 사진을 showsavedimg에 보여준다.
     void GetPirctureAndShowIt()
     {
         string pathToFile = GetPicture.GetLastPicturePath();
+        Debug.Log("Test : "+pathToFile);
         if (pathToFile == null)
         {
             return;

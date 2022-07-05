@@ -11,6 +11,7 @@ public class CameraManager : MonoBehaviour
 
     public void CameraOn()
     {
+#if !UNITY_EDITOR && UNITY_ANDROID
         // 카메라 권한 확인
         if(!Permission.HasUserAuthorizedPermission(Permission.Camera))
         {
@@ -49,6 +50,18 @@ public class CameraManager : MonoBehaviour
             // 카메라 시작하기
             camTexture.Play();
         }
+
+#elif UNITY_EDITOR
+        if (camTexture == null)
+            camTexture = new WebCamTexture();
+
+            //GetComponent<Renderer>().material.mainTexture = camTexture;
+            cameraView.texture = camTexture;
+
+        if (!camTexture.isPlaying)
+            camTexture.Play();
+
+#endif
     }
 
     // 카메라 끄기

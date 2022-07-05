@@ -25,9 +25,15 @@ public class GetPicture : MonoBehaviour {
         string saveDir;
         #if !UNITY_EDITOR && UNITY_ANDROID
         saveDir = AJC.CallStatic<string>("/storage/emulated/0/DCIM/{Application.productName}/");
+
+        #elif UNITY_EDITOR
+        Debug.Log("UnityEditor");
+        string url = "/1.Scripts/img";
+        saveDir = Application.dataPath+url;
         
-        #else
-        saveDir = Application.persistentDataPath; // 눈에 안보이는 경로임 비추, 위에서 경로 연결이 되어야 한다.
+        // #else
+        // // saveDir = Application.persistentDataPath; // 눈에 안보이는 경로임 비추, 위에서 경로 연결이 되어야 한다.
+        // saveDir = "E:/Unity/GItHub/Cam_Android/Assets/1.Scripts/img/";
         #endif
         // 저장경로에서 PNG파일 모두 검색
         string[] files = Directory.GetFiles(saveDir, "*.png");
