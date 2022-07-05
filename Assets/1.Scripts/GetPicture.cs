@@ -25,12 +25,12 @@ public class GetPicture : MonoBehaviour {
         string saveDir;
         #if !UNITY_EDITOR && UNITY_ANDROID
         saveDir = AJC.CallStatic<string>("/storage/emulated/0/DCIM/{Application.productName}/");
-        // saveDir = AJC.CallStatic<string>($"/storage/emulated/0/DCIM/{Application.productName}/");
+        
         #else
-        saveDir = Application.persistentDataPath;
+        saveDir = Application.persistentDataPath; // 눈에 안보이는 경로임 비추, 위에서 경로 연결이 되어야 한다.
         #endif
         // 저장경로에서 PNG파일 모두 검색
-        string[] files = Directory.GetFiles(saveDir, "*.");
+        string[] files = Directory.GetFiles(saveDir, "*.png");
         // 만약 PNG파일이 있다면, 마지막 파일을 반환
         if (files.Length > 0)
         {

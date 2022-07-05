@@ -12,6 +12,7 @@ public class Screenshot : MonoBehaviour
 
     // 파일 불러올 때 필요
     string albumName = "Test";           // 생성될 앨범의 이름
+    string fileName = "Shot.png";           // 생성될 파일의 이름
 
     [SerializeField]
     GameObject showSavedImg;                    // 찍은 사진이 뜰 패널
@@ -84,7 +85,7 @@ public class Screenshot : MonoBehaviour
 
         // 갤러리갱신
         // Debug.Log("" + NativeGallery.SaveImageToGallery(ss, albumName, "Screenshot_" + System.DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss") + "{0}.png"));
-        Debug.Log("" + NativeGallery.SaveImageToGallery( screenShot, "GalleryTest", "Image.png", 
+        Debug.Log("" + NativeGallery.SaveImageToGallery( screenShot, albumName, fileName, 
                 ( success, path ) => Debug.Log( "Media save result: " + success + " " + path )));
 
       //  if(NativeGallery.SaveImageToGallery(screenShot,"GalleryTest", "Image.png", ( success, path ) => Debug.Log( "Media save result: " + success + " " + path ))
