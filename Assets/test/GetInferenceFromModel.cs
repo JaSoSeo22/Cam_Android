@@ -50,6 +50,15 @@ public class GetInferenceFromModel : MonoBehaviour
 
     void Update()
     {
+        PreModel();
+    }
+
+    public void PreModel()
+    {
+        // string pathToFile = GetPicture.GetLastPicturePath();
+        // if (pathToFile == null) return;
+        // texture = Screenshot.GetScreenshotImage(pathToFile);
+        
         if (Input.GetKeyDown(KeyCode.Space))
         {
             // 색상 텍스처에서 텐서 만들기
@@ -70,6 +79,6 @@ public class GetInferenceFromModel : MonoBehaviour
     private void OnDestroy()
     {
         // 엔진을 수동으로 폐기합니다(가비지 수집 아님).
-        _engine.Dispose();
+        _engine?.Dispose();
     }
 }
