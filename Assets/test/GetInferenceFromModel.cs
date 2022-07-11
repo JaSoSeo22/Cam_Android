@@ -39,7 +39,6 @@ public class GetInferenceFromModel : MonoBehaviour
 
     public Prediction prediction;
     
-    // 첫 번째 프레임 업데이트 전에 Start가 호출됩니다.
     void Start()
     {
         // 런타임 모델 및 작업자를 설정합니다.
@@ -49,7 +48,6 @@ public class GetInferenceFromModel : MonoBehaviour
         prediction = new Prediction();
     }
 
-    // 업데이트는 프레임당 한 번 호출됩니다.
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -72,6 +70,6 @@ public class GetInferenceFromModel : MonoBehaviour
     private void OnDestroy()
     {
         // 엔진을 수동으로 폐기합니다(가비지 수집 아님).
-        _engine?.Dispose();
+        _engine.Dispose();
     }
 }

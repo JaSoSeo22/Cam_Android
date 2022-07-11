@@ -22,7 +22,7 @@ public class Screenshot : MonoBehaviour
     private int num = 1;
 
     // 지정한 경로( _savepath)에 PNG 파일형식으로 저장합니다.
-    private string _SavePath = "/1.Scripts/img"; //경로 바꾸세요!
+    private string _SavePath = "/img"; //경로 바꾸세요!
     int _CaptureCounter = 0; // 파일명을 위한
 
     static WebCamTexture cam;
@@ -101,7 +101,7 @@ public class Screenshot : MonoBehaviour
 
         Debug.Log("Screenshot!!!");
         //System.IO.File.WriteAllBytes(Application.dataPath+_SavePath + _CaptureCounter.ToString() + ".png", screenShot.EncodeToPNG());
-        System.IO.File.WriteAllBytes("E:/Unity/GItHub/Cam_Android/Assets/1.Scripts/img/" + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
+        System.IO.File.WriteAllBytes("E:/Unity/GItHub/Cam_Android/Assets/img/" + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
         Debug.Log(++_CaptureCounter);
 
 #elif !UNITY_EDITOR && UNITY_ANDROID
