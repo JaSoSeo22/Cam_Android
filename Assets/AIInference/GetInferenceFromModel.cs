@@ -56,16 +56,17 @@ public class GetInferenceFromModel : MonoBehaviour
         prediction = new Prediction();
         
         // 마지막으로 사진이 저장된 경로 가져오기
-        string pathToFile = GetPicture.GetLastPicturePath();
         // 경로가 비어있다면, 즉 저장된 사진이 없다면 실행 안함
-        if (pathToFile == null) return;
         // 마지막으로 저장된 사진 texture에 가져오기
-        texture = Screenshot.GetScreenshotImage(pathToFile);
+        
+        // string pathToFile = GetPicture.GetLastPicturePath();
+        // if (pathToFile == null) return;
+        // texture = Screenshot.GetScreenshotImage(pathToFile);
     }
 
     void Update()
     {
-        PreModel();
+        
     }
 
     public void PreModel()

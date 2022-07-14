@@ -499,10 +499,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5303270038488967990, guid: 1997b4f548bdc4248997468def09b786, type: 3}
-      propertyPath: m_text
-      value: shirt 0    tree 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5303270039091621095, guid: 1997b4f548bdc4248997468def09b786, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -602,6 +598,10 @@ PrefabInstance:
     - target: {fileID: 5303270039837453101, guid: 1997b4f548bdc4248997468def09b786, type: 3}
       propertyPath: m_Name
       value: AndroidCamCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 5303270040172321362, guid: 1997b4f548bdc4248997468def09b786, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1997b4f548bdc4248997468def09b786, type: 3}
