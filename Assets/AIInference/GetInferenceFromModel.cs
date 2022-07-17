@@ -19,7 +19,6 @@ public class GetInferenceFromModel : MonoBehaviour
     public TextMeshProUGUI result; // 결과값을 확인할 UI Text
 
 
-
     /// <summary>
     /// 인스펙터에서 쉽게 볼 수 있는 방식으로 예측 결과를 유지하는 데 사용되는 구조체.
     /// </summary>
@@ -71,8 +70,6 @@ public class GetInferenceFromModel : MonoBehaviour
 
     public void PreModel()
     {
-        // if (Input.GetKeyDown(KeyCode.Space)) // 
-        // {
         // 색상 텍스처에서 텐서 만들기
         var channelCount = 3; //회색조, 3 = 색상, 4 = 색상 알파
         // 텍스처에서 입력을 위한 텐서 생성.
@@ -82,13 +79,12 @@ public class GetInferenceFromModel : MonoBehaviour
         Tensor outputY = _engine.Execute(inputX).PeekOutput();
         // 출력 텐서를 사용하여 예측 구조체의 값을 설정
         prediction.SetPrediction(outputY);   
-        // }  
+
+        // 예측값중 가장 높은 값 문자열로 변환해서 UI Text에 보여주기
+        result.text = "result : " + prediction.predictedValue.ToString();
 
         // 입력 텐서를 수동으로 폐기(가비지 컬렉터 아님).
         inputX.Dispose();
-
-        // 예측값중 가장 높은 값 문자열로 변환해서 UI Text에 보여주기
-        result.text = prediction.predictedValue.ToString();
     }
 
     private void OnDestroy()

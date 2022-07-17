@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
@@ -45,6 +44,7 @@ public class LoadImg : MonoBehaviour
         File.WriteAllBytes(savePath + filename + ".png", fileData);
         
         var temp = File.ReadAllBytes(savePath + filename + ".png");
+        Debug.Log(temp);
 
         Texture2D tex = new Texture2D(0,0);
         tex.LoadImage(temp);

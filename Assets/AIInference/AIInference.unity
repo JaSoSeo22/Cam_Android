@@ -599,9 +599,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: AndroidCamCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 5303270039915176191, guid: 1997b4f548bdc4248997468def09b786, type: 3}
+      propertyPath: texture
+      value: 
+      objectReference: {fileID: 2800000, guid: 1707effe2237e8e4cbe82fd7ebdd915f, type: 3}
     - target: {fileID: 5303270040172321362, guid: 1997b4f548bdc4248997468def09b786, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1997b4f548bdc4248997468def09b786, type: 3}
