@@ -1,22 +1,25 @@
-using System;
-using System.Linq;
-using Unity.Barracuda;
-using UnityEngine;
-using TMPro;
+using System; // Serializable, Array
+using System.Collections.Generic; // List<>
+using System.Linq; // Max()
+using Unity.Barracuda; // Model, NNModel, IWorker
+using UnityEngine; // MonoBehaviour 
+using TMPro; // TextMeshProUGUI
+using UnityEditor; // SetTextureImporterFormat()
 
 // 모델의 추론 과정을 모방한 클래스 
 public class GetInferenceFromModel : MonoBehaviour
 {
 
     public Texture2D texture; // 모델이 예측할 이미지 텍스처
+    public List<Texture2D> textureList = new List<Texture2D>(); // Resoureces 폴더에서 불러올 텍스처 리스트 
+    int _CaptureCounter = 0; // 파일명을 위한 숫자 변수
     
     public NNModel modelAsset; // 학습된 모델
-
     private Model _runtimeModel; // 실행할 모델
-
     private IWorker _engine; // 모델을 돌릴 엔진
 
     public TextMeshProUGUI result; // 결과값을 확인할 UI Text
+    
 
 
     /// <summary>
@@ -31,10 +34,10 @@ public class GetInferenceFromModel : MonoBehaviour
         public float[] predicted;
 
         // 텐서를 매개변수로 받아 예측값을 가져오는 메서드
-        public void SetPrediction(Tensor t)
+        public void SetPrediction(Tensor tens)
         {
             // 부동 소수점 값 출력을 예측 배열로 추출
-            predicted = t.AsFloats();
+            predicted = tens.AsFloats();
             // 가장 가능성이 높은 것은 예측 값
             predictedValue = Array.IndexOf(predicted, predicted.Max());
             Debug.Log($"Predicted {predictedValue}");
@@ -47,33 +50,25 @@ public class GetInferenceFromModel : MonoBehaviour
     
     private void Start()
     {
+        bool verbose = true;
         // 런타임 모델 및 작업자를 설정
-        _runtimeModel = ModelLoader.Load(modelAsset);
+        _runtimeModel = ModelLoader.Load(modelAsset,verbose);
         // 실행 엔진 설정(worker 생성 (실행 모델, 실행할 엔진 : CPU, GPU, Auto))
-        _engine = WorkerFactory.CreateWorker(_runtimeModel, WorkerFactory.Device.CPU);
+        _engine = WorkerFactory.CreateWorker(_runtimeModel, WorkerFactory.Device.CPU,verbose);
         // 예측 구조체 인스턴스화.
         prediction = new Prediction();
-        
-        // 마지막으로 사진이 저장된 경로 가져오기
-        // 경로가 비어있다면, 즉 저장된 사진이 없다면 실행 안함
-        // 마지막으로 저장된 사진 texture에 가져오기
-        
-        // string pathToFile = GetPicture.GetLastPicturePath();
-        // if (pathToFile == null) return;
-        // texture = Screenshot.GetScreenshotImage(pathToFile);
-    }
-
-    void Update()
-    {
-        
     }
 
     public void PreModel()
     {
+
+        
+        texture.Resize(64,64); // 입력 데이터 크기 조절(64,64,3)
+       
         // 색상 텍스처에서 텐서 만들기
         var channelCount = 3; //회색조, 3 = 색상, 4 = 색상 알파
         // 텍스처에서 입력을 위한 텐서 생성.
-        var inputX = new Tensor(texture, channelCount);
+        Tensor inputX = new Tensor(texture, channelCount);
 
         // 실행해서(Execute) 결과값 내보내기(PeekOutput)
         Tensor outputY = _engine.Execute(inputX).PeekOutput();
@@ -81,7 +76,7 @@ public class GetInferenceFromModel : MonoBehaviour
         prediction.SetPrediction(outputY);   
 
         // 예측값중 가장 높은 값 문자열로 변환해서 UI Text에 보여주기
-        result.text = "result : " + prediction.predictedValue.ToString();
+        result.text = "  result : " + prediction.predictedValue.ToString();
 
         // 입력 텐서를 수동으로 폐기(가비지 컬렉터 아님).
         inputX.Dispose();
@@ -92,4 +87,39 @@ public class GetInferenceFromModel : MonoBehaviour
         // 엔진을 수동으로 폐기합니다(가비지 컬렉터 아님).
         _engine?.Dispose();
     }
+
+    // 빌드 시 저장된 이미지 Advansed 의 read/write enable 활성화를 위한 메서드 
+    public static void SetTextureImporterFormat(Texture2D texture, bool isReadable)
+    {
+        // 텍스처가 없다면 return
+        if (texture == null) return;
+    
+        // 에셋 경로 가져오기
+        string assetPath = AssetDatabase.GetAssetPath(texture);
+    
+        // 텍스처 임포터 초기화
+        TextureImporter textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+        if (textureImporter != null)
+        {
+            textureImporter.textureType = TextureImporterType.Default;
+            textureImporter.isReadable = isReadable;
+    
+            AssetDatabase.ImportAsset(assetPath);
+            AssetDatabase.Refresh();
+        }
+    }
+
+    public void LoadTexture()
+    {
+        
+            // 경로가 비어있다면, 즉 저장된 사진이 없다면 실행 안함
+            // 마지막으로 저장된 사진 (List[List.Count-1]) texture에 가져오기
+            // 리스트를 이용해 텍스처 이미지 관리 
+        
+            // "E:/Unity/GItHub/Cam_Android/Assets/Resources/" + "foto" + _CaptureCounter.ToString()
+            Texture2D texture = Resources.Load<Texture2D>("AIMG/foto"+ _CaptureCounter.ToString());
+            Debug.Log(++_CaptureCounter);
+        
+    }
+
 }
