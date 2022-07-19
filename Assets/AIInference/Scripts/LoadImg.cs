@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 
+// PC에서는 사용 안함, 모바일 빌드 시 사용 예정
 public class LoadImg : MonoBehaviour
 {
     public RawImage img;

@@ -11,7 +11,7 @@ public class CameraManager : MonoBehaviour
 
     public void CameraOn()
     {
-#if !UNITY_EDITOR && UNITY_ANDROID
+//#if !UNITY_EDITOR && UNITY_ANDROID
         //카메라 권한 확인
         if(!Permission.HasUserAuthorizedPermission(Permission.Camera))
         {
@@ -51,17 +51,17 @@ public class CameraManager : MonoBehaviour
             camTexture.Play();
         }
 
-#elif UNITY_EDITOR
-        if (camTexture == null)
-            camTexture = new WebCamTexture();
+//#elif UNITY_EDITOR
+        // if (camTexture == null)
+        //     camTexture = new WebCamTexture();
 
-            //GetComponent<Renderer>().material.mainTexture = camTexture;
-            cameraView.texture = camTexture;
+        //     //GetComponent<Renderer>().material.mainTexture = camTexture;
+        //     cameraView.texture = camTexture;
 
-        if (!camTexture.isPlaying)
-            camTexture.Play();
+        // if (!camTexture.isPlaying)
+        //     camTexture.Play();
 
-#endif
+//#endif
     }
 
     // 카메라 끄기

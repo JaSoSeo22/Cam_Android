@@ -57,6 +57,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d18d23ad6a09ae241a8270964cfad065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blink: {fileID: 0}
-  showSavedImg: {fileID: 0}
   debugUI: {fileID: 0}

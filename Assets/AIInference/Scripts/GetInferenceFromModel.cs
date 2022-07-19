@@ -10,9 +10,9 @@ using UnityEditor; // SetTextureImporterFormat()
 public class GetInferenceFromModel : MonoBehaviour
 {
 
-    public Texture2D texture; // 모델이 예측할 이미지 텍스처
-    public List<Texture2D> textureList = new List<Texture2D>(); // Resoureces 폴더에서 불러올 텍스처 리스트 
-    int _CaptureCounter = 0; // 파일명을 위한 숫자 변수
+    public Texture2D texture = null; // 모델이 예측할 이미지 텍스처
+    // public List<Texture2D> textureList = new List<Texture2D>(); // Resoureces 폴더에서 불러올 텍스처 리스트 
+    public Texture2D[] textureArr;
     
     public NNModel modelAsset; // 학습된 모델
     private Model _runtimeModel; // 실행할 모델
@@ -61,7 +61,8 @@ public class GetInferenceFromModel : MonoBehaviour
     public void PreModel()
     {
 
-        
+        LoadTextureFromResources();
+        SetTextureImporterFormat(texture, true);
         texture.Resize(64,64); // 입력 데이터 크기 조절(64,64,3)
        
         // 색상 텍스처에서 텐서 만들기
@@ -87,9 +88,10 @@ public class GetInferenceFromModel : MonoBehaviour
         _engine?.Dispose();
     }
 
-    // 빌드 시 저장된 이미지 Advansed 의 read/write enable 활성화를 위한 메서드 
+    // 빌드 시 저장된 이미지 옵션인 Advansed의 read/write enable 활성화를 위한 메서드 
     public static void SetTextureImporterFormat(Texture2D texture, bool isReadable)
     {
+#if UNITY_EDITOR
         // 텍스처가 없다면 return
         if (texture == null) return;
     
@@ -106,18 +108,26 @@ public class GetInferenceFromModel : MonoBehaviour
             AssetDatabase.ImportAsset(assetPath);
             AssetDatabase.Refresh();
         }
+
+#elif !UNITY_EDITOR && UNITY_ANDROID
+        if (texture == null) return;
+        // texture.TextureImporter.isReadable; 에러
+
+#endif
     }
 
-    public void LoadTexture()
-    {
+    // 리소스 폴더에서 파일 가져오기
+    public void LoadTextureFromResources()
+    {        
+        // 경로가 비어있다면, 즉 저장된 사진이 없다면 실행 안함
+        // 마지막으로 저장된 사진 (List[List.Count-1]) texture에 가져오기
+        // 리스트( => 배열로 변경 )이용해 텍스처 이미지 관리 
+        // "E:/Unity/GItHub/Cam_Android/Assets/Resources/" + "foto" + _CaptureCounter.ToString()
         
-            // 경로가 비어있다면, 즉 저장된 사진이 없다면 실행 안함
-            // 마지막으로 저장된 사진 (List[List.Count-1]) texture에 가져오기
-            // 리스트를 이용해 텍스처 이미지 관리 
-        
-            // "E:/Unity/GItHub/Cam_Android/Assets/Resources/" + "foto" + _CaptureCounter.ToString()
-            Texture2D texture = Resources.Load<Texture2D>("AIMG/foto"+ _CaptureCounter.ToString());
-            Debug.Log(++_CaptureCounter);
+        textureArr = Resources.LoadAll<Texture2D>("SavedImg"); // 리소스 폴더 하위 AIMG에 있는 모든 리소스 가져오기
+        if(textureArr == null) Debug.Log("null"); // 만약 비었다면 null 알림
+       
+        texture = textureArr[textureArr.Length-1]; // 텍스처에 가져온 값의 마지막 파일 넣기
         
     }
 

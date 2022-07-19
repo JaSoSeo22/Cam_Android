@@ -189,11 +189,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &376601294 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5303270040151266003, guid: 1997b4f548bdc4248997468def09b786, type: 3}
-  m_PrefabInstance: {fileID: 5303270040454457373}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &527287920 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2134205460998395845, guid: 84b4e2a804f92274798efd1b6d9c3c66, type: 3}
@@ -227,11 +222,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &667931639 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5303270039872191466, guid: 1997b4f548bdc4248997468def09b786, type: 3}
-  m_PrefabInstance: {fileID: 5303270040454457373}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,17 +421,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 542466980}
     - target: {fileID: 2134205460998395845, guid: 84b4e2a804f92274798efd1b6d9c3c66, type: 3}
-      propertyPath: blink
-      value: 
-      objectReference: {fileID: 376601294}
-    - target: {fileID: 2134205460998395845, guid: 84b4e2a804f92274798efd1b6d9c3c66, type: 3}
       propertyPath: debugUI
       value: 
       objectReference: {fileID: 2147241439}
-    - target: {fileID: 2134205460998395845, guid: 84b4e2a804f92274798efd1b6d9c3c66, type: 3}
-      propertyPath: showSavedImg
-      value: 
-      objectReference: {fileID: 667931639}
     - target: {fileID: 2134205460998395864, guid: 84b4e2a804f92274798efd1b6d9c3c66, type: 3}
       propertyPath: m_Name
       value: CameraManager
@@ -499,18 +481,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 667931641, guid: 1997b4f548bdc4248997468def09b786, type: 3}
-      propertyPath: m_Texture
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 5303270039091621095, guid: 1997b4f548bdc4248997468def09b786, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 527287921}
-    - target: {fileID: 5303270039370016953, guid: 1997b4f548bdc4248997468def09b786, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5303270039405169425, guid: 1997b4f548bdc4248997468def09b786, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -606,18 +580,6 @@ PrefabInstance:
     - target: {fileID: 5303270039837453101, guid: 1997b4f548bdc4248997468def09b786, type: 3}
       propertyPath: m_Name
       value: AndroidCamCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 5303270039872191466, guid: 1997b4f548bdc4248997468def09b786, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5303270039915176191, guid: 1997b4f548bdc4248997468def09b786, type: 3}
-      propertyPath: texture
-      value: 
-      objectReference: {fileID: 2800000, guid: 32df4c3d4fdc39f46bb1ff75db239ab2, type: 3}
-    - target: {fileID: 5303270040172321362, guid: 1997b4f548bdc4248997468def09b786, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1997b4f548bdc4248997468def09b786, type: 3}
