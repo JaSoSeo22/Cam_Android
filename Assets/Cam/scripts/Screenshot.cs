@@ -38,14 +38,12 @@ public class Screenshot : MonoBehaviour
         debugUI.text = "Phase 1";
         yield return new WaitForEndOfFrame();
 
-
         // 셔터 사운드 넣기...
         yield return new WaitForSeconds(1f);
 
         debugUI.text = "Phase 2";
         yield return new WaitForSeconds(1f);
         // yield return new WaitForEndOfFrame();
-
 
         isCoroutinePlaying = false;
         yield return new WaitForEndOfFrame();
@@ -61,14 +59,15 @@ public class Screenshot : MonoBehaviour
 #if UNITY_EDITOR // PC로 할 경우 
         //스크린샷할 이미지 담을 공간 생성
         Texture2D screenShot = new Texture2D(1000, 1000, TextureFormat.RGB24, false); //카메라가 인식할 영역의 크기
-
-        Texture2D snap = new Texture2D(cam.width, cam.height);
-        snap.SetPixels(cam.GetPixels());
-        snap.Apply();
+        
+        // 현재 이미지로부터 지정 영역의 픽셀들을 텍스쳐에 저장
+        Rect area = new Rect(300, 40, 1000, 1000); // (cameraview UI Pivot 좌하단 기준) Rect(좌표 x,y 입력, 가로 길이, 세로 길이)
+        screenShot.ReadPixels(area, 0, 0); 
+        screenShot.Apply();
 
         Debug.Log("Screenshot!!!");
 
-        System.IO.File.WriteAllBytes("E:/Unity/GItHub/Cam_Android/Assets/img/" + "foto" + _CaptureCounter.ToString() + ".png", snap.EncodeToPNG());
+        System.IO.File.WriteAllBytes("E:/Unity/GItHub/Cam_Android/Assets/Resources/AIMG" + "foto" + _CaptureCounter.ToString() + ".png", screenShot.EncodeToPNG());
         Debug.Log(++_CaptureCounter);
 
 #elif !UNITY_EDITOR && UNITY_ANDROID // 안드로이드 경우 

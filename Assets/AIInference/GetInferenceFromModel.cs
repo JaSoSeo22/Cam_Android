@@ -38,7 +38,7 @@ public class GetInferenceFromModel : MonoBehaviour
         {
             // 부동 소수점 값 출력을 예측 배열로 추출
             predicted = tens.AsFloats();
-            // 가장 가능성이 높은 것은 예측 값
+            // 가장 가능성이 높은 것(=예측 값)의 인덱스 가져오기 
             predictedValue = Array.IndexOf(predicted, predicted.Max());
             Debug.Log($"Predicted {predictedValue}");
         }
@@ -50,11 +50,10 @@ public class GetInferenceFromModel : MonoBehaviour
     
     private void Start()
     {
-        bool verbose = true;
         // 런타임 모델 및 작업자를 설정
-        _runtimeModel = ModelLoader.Load(modelAsset,verbose);
+        _runtimeModel = ModelLoader.Load(modelAsset);
         // 실행 엔진 설정(worker 생성 (실행 모델, 실행할 엔진 : CPU, GPU, Auto))
-        _engine = WorkerFactory.CreateWorker(_runtimeModel, WorkerFactory.Device.CPU,verbose);
+        _engine = WorkerFactory.CreateWorker(_runtimeModel, WorkerFactory.Device.CPU);
         // 예측 구조체 인스턴스화.
         prediction = new Prediction();
     }
