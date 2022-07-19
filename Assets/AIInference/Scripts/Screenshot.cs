@@ -61,7 +61,7 @@ public class Screenshot : MonoBehaviour
         Debug.Log("Screenshot!!!");
 
         var workdir = Directory.GetCurrentDirectory(); // 현재 경로 찾기
-        System.IO.File.WriteAllBytes(workdir+"/Assets/TextMesh Pro/Resources/SavedImg" + "foto" + _CaptureCounter.ToString() + ".png", screenShot.EncodeToPNG());
+        System.IO.File.WriteAllBytes(workdir+"/Assets/TextMesh Pro/Resources/SavedImg/" + "foto" + _CaptureCounter.ToString() + ".png", screenShot.EncodeToPNG());
         Debug.Log(++_CaptureCounter);
         Debug.Log(workdir);
 
@@ -85,7 +85,7 @@ public class Screenshot : MonoBehaviour
         Debug.Log("Screenshot!!!");
 
         var workdir = Directory.GetCurrentDirectory(); // 현재 경로 찾기
-        System.IO.File.WriteAllBytes(workdir+"/Assets/TextMesh Pro/Resources/SavedImg" + "foto" + _CaptureCounter.ToString() + ".png", screenShot.EncodeToPNG());
+        System.IO.File.WriteAllBytes(workdir+"/Assets/TextMesh Pro/Resources/SavedImg/" + "foto" + _CaptureCounter.ToString() + ".png", screenShot.EncodeToPNG());
         Debug.Log(++_CaptureCounter);
 
         // 복사 완료됐기 때문에 원본 메모리 삭제

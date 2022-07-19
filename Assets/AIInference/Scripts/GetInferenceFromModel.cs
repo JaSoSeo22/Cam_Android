@@ -119,14 +119,14 @@ public class GetInferenceFromModel : MonoBehaviour
     // 리소스 폴더에서 파일 가져오기
     public void LoadTextureFromResources()
     {        
-        // 경로가 비어있다면, 즉 저장된 사진이 없다면 실행 안함
+        
         // 마지막으로 저장된 사진 (List[List.Count-1]) texture에 가져오기
         // 리스트( => 배열로 변경 )이용해 텍스처 이미지 관리 
-        // "E:/Unity/GItHub/Cam_Android/Assets/Resources/" + "foto" + _CaptureCounter.ToString()
+        // "E:/Unity/GItHub/Cam_Android/Assets/TextMesh Pro/Resources/SavedImg" + "foto" + _CaptureCounter.ToString()
         
-        textureArr = Resources.LoadAll<Texture2D>("SavedImg"); // 리소스 폴더 하위 AIMG에 있는 모든 리소스 가져오기
-        if(textureArr == null) Debug.Log("null"); // 만약 비었다면 null 알림
-       
+        textureArr = Resources.LoadAll<Texture2D>("SavedImg"); // 리소스 폴더 하위 폴더인 SavedImg에 있는 모든 리소스 가져오기
+
+        if(textureArr == null) return; // 배열이 비어있다면, 즉 저장된 사진이 없다면 실행 안함
         texture = textureArr[textureArr.Length-1]; // 텍스처에 가져온 값의 마지막 파일 넣기
         
     }
