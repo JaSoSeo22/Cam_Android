@@ -5,19 +5,28 @@ using Unity.Barracuda; // Model, NNModel, IWorker
 using UnityEngine; // MonoBehaviour 
 using TMPro; // TextMeshProUGUI
 using UnityEditor; // SetTextureImporterFormat()
+using UnityEngine.UI;
 
 // 모델의 추론 과정을 모방한 클래스 
 public class GetInferenceFromModel : MonoBehaviour
 {
+    public RawImage testimage;
 
-    public Texture2D texture = null; // 모델이 예측할 이미지 텍스처
-    // public List<Texture2D> textureList = new List<Texture2D>(); // Resoureces 폴더에서 불러올 텍스처 리스트 
-    public Texture2D[] textureArr;
+    public static GetInferenceFromModel instance;
+
+    [Header("---Texture---")]
+    public static Texture2D texture; // 모델이 예측할 이미지 텍스처
+    // public Texture2D[] textureArr; // Resoureces 폴더에서 불러올 텍스처 배열
     
+    [Header(" ---Model---")]
     public NNModel modelAsset; // 학습된 모델
     private Model _runtimeModel; // 실행할 모델
     private IWorker _engine; // 모델을 돌릴 엔진
 
+    // 예측값 구조체를 통해 필요한 기능 받아오기 
+    public Prediction prediction;
+
+    [Header("---Debugger---")]
     public TextMeshProUGUI result; // 결과값을 확인할 UI Text
     
 
@@ -44,10 +53,15 @@ public class GetInferenceFromModel : MonoBehaviour
         }
 
     }
-
-    // 예측값 구조체를 통해 필요한 기능 받아오기 
-    public Prediction prediction;
-    
+    private void Awake() 
+    {
+        if(instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+    }
     private void Start()
     {
         // 런타임 모델 및 작업자를 설정
@@ -57,13 +71,13 @@ public class GetInferenceFromModel : MonoBehaviour
         // 예측 구조체 인스턴스화.
         prediction = new Prediction();
     }
-
+    
+    // ModelExecute 버튼 누르면 실행될 함수
     public void PreModel()
     {
 
-        LoadTextureFromResources();
-        SetTextureImporterFormat(texture, true);
-        texture.Resize(64,64); // 입력 데이터 크기 조절(64,64,3)
+        texture = ResizeTexture(texture, 64, 64);
+        testimage.texture = texture;
        
         // 색상 텍스처에서 텐서 만들기
         var channelCount = 3; //회색조, 3 = 색상, 4 = 색상 알파
@@ -102,7 +116,7 @@ public class GetInferenceFromModel : MonoBehaviour
         TextureImporter textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
         if (textureImporter != null)
         {
-            textureImporter.textureType = TextureImporterType.Default;
+            textureImporter.textureType = TextureImporterType.Sprite;
             textureImporter.isReadable = isReadable;
     
             AssetDatabase.ImportAsset(assetPath);
@@ -117,18 +131,37 @@ public class GetInferenceFromModel : MonoBehaviour
     }
 
     // 리소스 폴더에서 파일 가져오기
-    public void LoadTextureFromResources()
-    {        
+    // public void LoadTextureFromResources()
+    // {        
         
-        // 마지막으로 저장된 사진 (List[List.Count-1]) texture에 가져오기
-        // 리스트( => 배열로 변경 )이용해 텍스처 이미지 관리 
-        // "E:/Unity/GItHub/Cam_Android/Assets/TextMesh Pro/Resources/SavedImg" + "foto" + _CaptureCounter.ToString()
+    //     // 마지막으로 저장된 사진 (List[List.Count-1]) texture에 가져오기
+    //     // 리스트( => 배열로 변경 )이용해 텍스처 이미지 관리 
+    //     // "E:/Unity/GItHub/Cam_Android/Assets/TextMesh Pro/Resources/SavedImg" + "foto" + _CaptureCounter.ToString()
         
-        textureArr = Resources.LoadAll<Texture2D>("SavedImg"); // 리소스 폴더 하위 폴더인 SavedImg에 있는 모든 리소스 가져오기
+    //     textureArr = Resources.LoadAll<Texture2D>("SavedImg"); // 리소스 폴더 하위 폴더인 SavedImg에 있는 모든 리소스 가져오기
 
-        if(textureArr == null) return; // 배열이 비어있다면, 즉 저장된 사진이 없다면 실행 안함
-        texture = textureArr[textureArr.Length-1]; // 텍스처에 가져온 값의 마지막 파일 넣기
+    //     if(textureArr == null) return; // 배열이 비어있다면, 즉 저장된 사진이 없다면 실행 안함
+    //     texture = textureArr[textureArr.Length-1]; // 텍스처에 가져온 값의 마지막 파일 넣기
         
-    }
+    // }
+
+    //  이미지 리사이징 함수 
+    public static Texture2D ResizeTexture(Texture2D texture, int w, int h)
+{
+	Texture2D result = new Texture2D(100, 100, TextureFormat.RGBA32, true);
+	Color[] rpixels = result.GetPixels(0);
+	float incX = (1.0f / (float)100);
+	float incY = (1.0f / (float)100);
+	for (int px = 0; px < rpixels.Length; px++)
+	{
+		rpixels[px] = texture.GetPixelBilinear(incX * ((float)px % 100), incY * ((float)Mathf.Floor(px / 100)));
+	}
+	result.SetPixels(rpixels, 0);
+	result.Apply();
+	return result;
+}
+
 
 }
+
+

@@ -51,17 +51,6 @@ public class CameraManager : MonoBehaviour
             camTexture.Play();
         }
 
-//#elif UNITY_EDITOR
-        // if (camTexture == null)
-        //     camTexture = new WebCamTexture();
-
-        //     //GetComponent<Renderer>().material.mainTexture = camTexture;
-        //     cameraView.texture = camTexture;
-
-        // if (!camTexture.isPlaying)
-        //     camTexture.Play();
-
-//#endif
     }
 
     // 카메라 끄기

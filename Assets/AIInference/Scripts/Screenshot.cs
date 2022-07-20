@@ -48,7 +48,8 @@ public class Screenshot : MonoBehaviour
         debugnum++;
     }
 
-    IEnumerator ScreenshotAndGallery2(){
+    IEnumerator ScreenshotAndGallery2() 
+    {
         yield return new WaitForEndOfFrame();
          //스크린샷할 이미지 담을 공간 생성
         Texture2D screenShot = new Texture2D(1000, 1000, TextureFormat.RGB24, false); //카메라가 인식할 영역의 크기
@@ -58,20 +59,22 @@ public class Screenshot : MonoBehaviour
         screenShot.ReadPixels(area, 0, 0); 
         screenShot.Apply();
 
-        Debug.Log("Screenshot!!!");
+        GetInferenceFromModel.texture = screenShot; // 찍은 사진을 따로 저장하지 않고 texture에 넘겨줌 
 
-        var workdir = Directory.GetCurrentDirectory(); // 현재 경로 찾기
-        System.IO.File.WriteAllBytes(workdir+"/Assets/TextMesh Pro/Resources/SavedImg/" + "foto" + _CaptureCounter.ToString() + ".png", screenShot.EncodeToPNG());
-        Debug.Log(++_CaptureCounter);
-        Debug.Log(workdir);
+        // Debug.Log("Screenshot!!!");
+
+        // var workdir = Directory.GetCurrentDirectory(); // 현재 프로젝트 경로 찾기
+        // System.IO.File.WriteAllBytes(workdir+"/Assets/TextMesh Pro/Resources/SavedImg/" + "foto" + _CaptureCounter.ToString() + ".png", screenShot.EncodeToPNG());
+        // Debug.Log(++_CaptureCounter);
+        // Debug.Log(workdir); 경로 확인
 
         // 복사 완료됐기 때문에 원본 메모리 삭제
-        Destroy(screenShot);    
+        // Destroy(screenShot);    // MissingReferenceException: The object of type 'Texture2D' has been destroyed but you are still trying to access it.
     }
 
 
     // 스크린샷 찍고 갤러리에 갱신
-    void ScreenshotAndGallery()
+    void ScreenshotAndGallery() // readofpixel error 
     {
 //#if UNITY_EDITOR // PC로 할 경우 
         //스크린샷할 이미지 담을 공간 생성
