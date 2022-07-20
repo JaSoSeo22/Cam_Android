@@ -10,13 +10,9 @@ using UnityEngine.UI;
 // 모델의 추론 과정을 모방한 클래스 
 public class GetInferenceFromModel : MonoBehaviour
 {
-    public RawImage testimage;
-
     public static GetInferenceFromModel instance;
 
-    [Header("---Texture---")]
     public static Texture2D texture; // 모델이 예측할 이미지 텍스처
-    // public Texture2D[] textureArr; // Resoureces 폴더에서 불러올 텍스처 배열
     
     [Header(" ---Model---")]
     public NNModel modelAsset; // 학습된 모델
@@ -28,6 +24,8 @@ public class GetInferenceFromModel : MonoBehaviour
 
     [Header("---Debugger---")]
     public TextMeshProUGUI result; // 결과값을 확인할 UI Text
+    public RawImage testimage;
+    public RawImage testimageafter;
     
 
 
@@ -75,37 +73,99 @@ public class GetInferenceFromModel : MonoBehaviour
     // ModelExecute 버튼 누르면 실행될 함수
     public void PreModel()
     {
+        testimage.texture = texture; // 이미지 잘 불러와 지는지 확인
+        Debug.Log("Origin width, height : " + texture.width +", "+texture.height);
+        Debug.Log("Origin mipmapCount, format : " + texture.mipmapCount +", "+ texture.format);
 
-        texture = ResizeTexture(texture, 64, 64);
-        testimage.texture = texture;
-       
+        // texture = ResizeTexture(texture);
+        texture = ScaleTexture(texture, 0.064f);
+        // texture.Resize(64, 64, TextureFormat.RGB24, true);        
+        testimageafter.texture = texture; // 리사이즈 잘 적용되는지 확인
+        Debug.Log("texture width, height : " + texture.width +", "+texture.height);
+        Debug.Log("texture mipmapCount, format : " + texture.mipmapCount +", "+ texture.format);
         // 색상 텍스처에서 텐서 만들기
-        var channelCount = 3; //회색조, 3 = 색상, 4 = 색상 알파
+        var channelCount = 3; //1 = 회색조, 3 = 색상, 4 = 색상 알파
+        // Debug.Log("AIModel input");
         // 텍스처에서 입력을 위한 텐서 생성.
-        Tensor inputX = new Tensor(texture, channelCount);
-
+        Tensor inputX = new Tensor(texture, channelCount); //(0, 64, 64,3)
+        Debug.Log("inputX width, height, channels, batch, shape: " + inputX.width +", "+inputX.height+", "+ inputX.channels +", "+inputX.batch +", "+inputX.shape);
+        
         // 실행해서(Execute) 결과값 내보내기(PeekOutput)
         Tensor outputY = _engine.Execute(inputX).PeekOutput();
+        Debug.Log("outputY width, height, channels, batch, shape: " + outputY.width +", "+outputY.height+", "+ outputY.channels +", "+outputY.batch +", "+outputY.shape);
+        // Debug.Log("AIModel OutPut!");
         // 출력 텐서를 사용하여 예측 구조체의 값을 설정
         prediction.SetPrediction(outputY);   
-
         // 예측값중 가장 높은 값 문자열로 변환해서 UI Text에 보여주기
         result.text = "  result : " + prediction.predictedValue.ToString();
-
         // 입력 텐서를 수동으로 폐기(가비지 컬렉터 아님).
         inputX.Dispose();
     }
 
+    // 640이던 이미지 100으로 줄인 함수 
+    public static Texture2D ResizeTexture(Texture2D tex)
+    {
+        // Texture2D result = new Texture2D(100, 100, TextureFormat.RGBA32, true);
+        Texture2D result = new Texture2D(100, 100, TextureFormat.RGB24, false);
+        Color[] rpixels = result.GetPixels(0);
+        float incX = (1.0f / (float)100);
+        float incY = (1.0f / (float)100);
+        for (int px = 0; px < rpixels.Length; px++)
+        {
+            rpixels[px] = tex.GetPixelBilinear(incX * ((float)px % 100), incY * ((float)Mathf.Floor(px / 100)));
+        }
+        result.SetPixels(rpixels, 0);
+        result.Apply();
+        return result;
+    }
+
+    // 비율로 해서 Resize하기
+    public  Texture2D ScaleTexture( Texture2D source, float _scaleFactor)
+    {
+        if (_scaleFactor == 1f)
+        {
+            return source;
+        }
+        else if (_scaleFactor == 0f)
+        {
+            return Texture2D.blackTexture;
+        }
+
+        int _newWidth = Mathf.RoundToInt(source.width * _scaleFactor);
+        int _newHeight = Mathf.RoundToInt(source.height * _scaleFactor);
+
+
+        
+        Color[] _scaledTexPixels = new Color[_newWidth * _newHeight];
+
+        for (int _yCord = 0; _yCord < _newHeight; _yCord++)
+        {
+            float _vCord = _yCord / (_newHeight * 1f);
+            int _scanLineIndex = _yCord * _newWidth;
+
+            for (int _xCord = 0; _xCord < _newWidth; _xCord++)
+            {
+                float _uCord = _xCord / (_newWidth * 1f);
+
+                _scaledTexPixels[_scanLineIndex + _xCord] = source.GetPixelBilinear(_uCord, _vCord);
+            }
+        }
+
+        // Create Scaled Texture
+        Texture2D result = new Texture2D(_newWidth, _newHeight, source.format, false);
+        result.SetPixels(_scaledTexPixels, 0);
+        result.Apply();
+
+        return result;
+    }
     private void OnDestroy()
     {
         // 엔진을 수동으로 폐기합니다(가비지 컬렉터 아님).
         _engine?.Dispose();
     }
 
-    // 빌드 시 저장된 이미지 옵션인 Advansed의 read/write enable 활성화를 위한 메서드 
     public static void SetTextureImporterFormat(Texture2D texture, bool isReadable)
     {
-#if UNITY_EDITOR
         // 텍스처가 없다면 return
         if (texture == null) return;
     
@@ -116,50 +176,14 @@ public class GetInferenceFromModel : MonoBehaviour
         TextureImporter textureImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
         if (textureImporter != null)
         {
-            textureImporter.textureType = TextureImporterType.Sprite;
+            textureImporter.textureType = TextureImporterType.Default;
             textureImporter.isReadable = isReadable;
+            
     
             AssetDatabase.ImportAsset(assetPath);
             AssetDatabase.Refresh();
         }
-
-#elif !UNITY_EDITOR && UNITY_ANDROID
-        if (texture == null) return;
-        // texture.TextureImporter.isReadable; 에러
-
-#endif
     }
-
-    // 리소스 폴더에서 파일 가져오기
-    // public void LoadTextureFromResources()
-    // {        
-        
-    //     // 마지막으로 저장된 사진 (List[List.Count-1]) texture에 가져오기
-    //     // 리스트( => 배열로 변경 )이용해 텍스처 이미지 관리 
-    //     // "E:/Unity/GItHub/Cam_Android/Assets/TextMesh Pro/Resources/SavedImg" + "foto" + _CaptureCounter.ToString()
-        
-    //     textureArr = Resources.LoadAll<Texture2D>("SavedImg"); // 리소스 폴더 하위 폴더인 SavedImg에 있는 모든 리소스 가져오기
-
-    //     if(textureArr == null) return; // 배열이 비어있다면, 즉 저장된 사진이 없다면 실행 안함
-    //     texture = textureArr[textureArr.Length-1]; // 텍스처에 가져온 값의 마지막 파일 넣기
-        
-    // }
-
-    //  이미지 리사이징 함수 
-    public static Texture2D ResizeTexture(Texture2D texture, int w, int h)
-{
-	Texture2D result = new Texture2D(100, 100, TextureFormat.RGBA32, true);
-	Color[] rpixels = result.GetPixels(0);
-	float incX = (1.0f / (float)100);
-	float incY = (1.0f / (float)100);
-	for (int px = 0; px < rpixels.Length; px++)
-	{
-		rpixels[px] = texture.GetPixelBilinear(incX * ((float)px % 100), incY * ((float)Mathf.Floor(px / 100)));
-	}
-	result.SetPixels(rpixels, 0);
-	result.Apply();
-	return result;
-}
 
 
 }
